@@ -3,6 +3,7 @@ import Login from '../../components/Login'
 import Signup from '../../components/Signup'
 
 class LandingPage extends React.Component {
+
   render(){
     return(
       <React.Fragment>

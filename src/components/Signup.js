@@ -1,4 +1,5 @@
 import React from 'react'
+import { connect } from 'react-redux'
 
 class Signup extends React.Component{
   state = {
@@ -14,7 +15,7 @@ class Signup extends React.Component{
 
   render(){
     return(
-      <form>
+      <form onSubmit={(e) => this.props.handleSignup(e, this.state)}>
         <label>
         Username:
         <input type='text' name='username' value={this.state.username} onChange={this.changeHandler}/>
@@ -29,4 +30,27 @@ class Signup extends React.Component{
   }
 }
 
-export default Signup
+const createUserFetch = (e, user) => {
+  e.preventDefault()
+  return fetch("http://localhost:3000/api/v1/users", {
+    method: "POST",
+    headers: {
+      'Content-Type': 'application/json',
+      'Accept': 'application/json'
+    },
+    body: JSON.stringify(user)
+  })
+  .then(res => res.json())
+
+}
+
+const mapDispatchToProps = (dispatch) => {
+  return ({
+    handleSignup: (e, user) => { createUserFetch(e, user).then(userObj => {
+      localStorage.setItem('token', userObj.jwt)
+      dispatch({type: 'USER_SIGNUP', payload: userObj})
+    })}
+  })
+}
+
+export default connect(null, mapDispatchToProps)(Signup)
